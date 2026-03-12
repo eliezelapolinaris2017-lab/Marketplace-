@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Pedido</title>
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar glass compact">
+      <a class="icon-btn" href="./index.html" aria-label="Volver">←</a>
+      <h1 class="single-line">Tu pedido</h1>
+      <span class="icon-btn ghost">·</span>
+    </header>
+
+    <main class="page checkout-layout">
+      <section class="glass panel">
+        <h2>Resumen</h2>
+        <div id="cartItems" class="cart-list"></div>
+        <div class="summary-row total-row">
+          <span>Total</span>
+          <strong id="cartTotal">$0.00</strong>
+        </div>
+      </section>
+
+      <section class="glass panel">
+        <h2>Datos del cliente</h2>
+        <form id="checkoutForm" class="form-grid">
+          <input name="customerName" placeholder="Nombre" required />
+          <input name="customerPhone" placeholder="Teléfono" required />
+          <textarea name="notes" placeholder="Notas del pedido"></textarea>
+          <button type="submit" class="primary-btn">Registrar pedido</button>
+        </form>
+        <p class="muted small">Si el carrito tiene un solo artículo y ese producto tiene paylink, el flujo puede ir directo al pago.</p>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="./js/checkout.js"></script>
+</body>
+</html>

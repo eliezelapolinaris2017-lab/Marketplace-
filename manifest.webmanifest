@@ -1,0 +1,9 @@
+{
+  "name": "Market Catalog",
+  "short_name": "Catalog",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f5f6fb",
+  "theme_color": "#7C3AED",
+  "icons": []
+}
