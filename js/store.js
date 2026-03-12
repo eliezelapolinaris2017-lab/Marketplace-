@@ -1,7 +1,15 @@
 import {
-  collection, addDoc, doc, getDoc, getDocs, orderBy, query, setDoc,
-  serverTimestamp, where
+  collection,
+  addDoc,
+  doc,
+  getDoc,
+  getDocs,
+  orderBy,
+  query,
+  setDoc,
+  serverTimestamp
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
 import { db } from './firebase-config.js';
 
 const DEFAULT_SETTINGS = {
@@ -20,24 +28,38 @@ export async function getSettings() {
 }
 
 export async function saveSettings(payload) {
-  return setDoc(doc(db, 'settings', 'main'), {
-    ...payload,
-    updatedAt: serverTimestamp()
-  }, { merge: true });
+  return setDoc(
+    doc(db, 'settings', 'main'),
+    {
+      ...payload,
+      updatedAt: serverTimestamp()
+    },
+    { merge: true }
+  );
 }
 
 export async function getCategories() {
-  const snap = await getDocs(query(collection(db, 'categories'), orderBy('order', 'asc')));
-  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  try {
+    const snap = await getDocs(
+      query(collection(db, 'categories'), orderBy('order', 'asc'))
+    );
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch (error) {
+    console.error('Error cargando categorías:', error);
+    return [];
+  }
 }
 
 export async function getProducts(activeOnly = true) {
-  const ref = collection(db, 'products');
-  const q = activeOnly
-    ? query(ref, where('active', '==', true), orderBy('createdAt', 'desc'))
-    : query(ref, orderBy('createdAt', 'desc'));
-  const snap = await getDocs(q);
-  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  try {
+    const ref = collection(db, 'products');
+    const snap = await getDocs(query(ref, orderBy('createdAt', 'desc')));
+    const items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    return activeOnly ? items.filter(item => item.active === true) : items;
+  } catch (error) {
+    console.error('Error cargando productos desde Firestore:', error);
+    throw error;
+  }
 }
 
 export async function getProductById(id) {
@@ -78,8 +100,19 @@ export function writeCart(items) {
 export function addToCart(product) {
   const cart = readCart();
   const idx = cart.findIndex(item => item.productId === product.id);
-  if (idx >= 0) cart[idx].qty += 1;
-  else cart.push({ productId: product.id, name: product.name, price: Number(product.price || 0), qty: 1, payLink: product.payLink || '' });
+
+  if (idx >= 0) {
+    cart[idx].qty += 1;
+  } else {
+    cart.push({
+      productId: product.id,
+      name: product.name,
+      price: Number(product.price || 0),
+      qty: 1,
+      payLink: product.payLink || ''
+    });
+  }
+
   writeCart(cart);
 }
 
@@ -88,7 +121,10 @@ export function clearCart() {
 }
 
 export function formatMoney(value) {
-  return new Intl.NumberFormat('es-US', { style: 'currency', currency: 'USD' }).format(Number(value || 0));
+  return new Intl.NumberFormat('es-US', {
+    style: 'currency',
+    currency: 'USD'
+  }).format(Number(value || 0));
 }
 
 export function getPlaceholder(name = 'Producto') {
