@@ -1,6 +1,6 @@
 import {
   collection, addDoc, doc, getDoc, getDocs, orderBy, query, setDoc,
-  serverTimestamp, where
+  serverTimestamp
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 import { db } from './firebase-config.js';
 
@@ -33,11 +33,9 @@ export async function getCategories() {
 
 export async function getProducts(activeOnly = true) {
   const ref = collection(db, 'products');
-  const q = activeOnly
-    ? query(ref, where('active', '==', true), orderBy('createdAt', 'desc'))
-    : query(ref, orderBy('createdAt', 'desc'));
-  const snap = await getDocs(q);
-  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  const snap = await getDocs(query(ref, orderBy('createdAt', 'desc')));
+  const items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  return activeOnly ? items.filter(item => item.active === true) : items;
 }
 
 export async function getProductById(id) {
@@ -78,8 +76,17 @@ export function writeCart(items) {
 export function addToCart(product) {
   const cart = readCart();
   const idx = cart.findIndex(item => item.productId === product.id);
-  if (idx >= 0) cart[idx].qty += 1;
-  else cart.push({ productId: product.id, name: product.name, price: Number(product.price || 0), qty: 1, payLink: product.payLink || '' });
+  if (idx >= 0) {
+    cart[idx].qty += 1;
+  } else {
+    cart.push({
+      productId: product.id,
+      name: product.name,
+      price: Number(product.price || 0),
+      qty: 1,
+      payLink: product.payLink || ''
+    });
+  }
   writeCart(cart);
 }
 
@@ -88,7 +95,10 @@ export function clearCart() {
 }
 
 export function formatMoney(value) {
-  return new Intl.NumberFormat('es-US', { style: 'currency', currency: 'USD' }).format(Number(value || 0));
+  return new Intl.NumberFormat('es-US', {
+    style: 'currency',
+    currency: 'USD'
+  }).format(Number(value || 0));
 }
 
 export function getPlaceholder(name = 'Producto') {
