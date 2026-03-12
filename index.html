@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Catálogo</title>
+  <meta name="theme-color" content="#7C3AED" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar glass">
+      <div>
+        <p class="eyebrow">Catálogo móvil</p>
+        <h1 id="storeName">Cargando tienda...</h1>
+      </div>
+      <a class="icon-btn" href="./admin.html" aria-label="Panel admin">⚙️</a>
+    </header>
+
+    <main class="page page-home">
+      <section class="hero-card">
+        <div>
+          <p class="eyebrow">Compra fácil</p>
+          <h2>Compra fácil, rápida y segura.</h2>
+          <p class="muted">Elige tu equipo ideal y paga al instante sin complicaciones.</p>
+        </div>
+      </section>
+
+      <section class="search-block glass">
+        <input id="searchInput" type="search" placeholder="Buscar producto..." />
+      </section>
+
+      <section class="tabs" id="categoryTabs"></section>
+
+      <section class="catalog-grid" id="productList">
+        <div class="empty-state">Cargando productos...</div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav glass">
+      <a class="active" href="./index.html">Inicio</a>
+      <a href="./pedido.html">Carrito</a>
+      <a href="./admin.html">Admin</a>
+    </nav>
+  </div>
+
+  <script type="module" src="./js/catalog.js"></script>
+</body>
+</html>
